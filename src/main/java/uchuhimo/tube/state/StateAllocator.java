@@ -3,11 +3,10 @@ package uchuhimo.tube.state;
 import uchuhimo.tube.TubeRuntimeException;
 import uchuhimo.tube.TubeSession;
 import uchuhimo.tube.function.Function0;
-import uchuhimo.tube.state.tuple.Tuple2StateFactory;
-import uchuhimo.tube.state.tuple.Tuple3StateFactory;
 import uchuhimo.tube.value.primitive.MutableDouble;
 import uchuhimo.tube.value.primitive.MutableInt;
 import uchuhimo.tube.value.primitive.MutableLong;
+import uchuhimo.tube.value.tuple.Tuple;
 import uchuhimo.tube.value.tuple.Tuple2;
 import uchuhimo.tube.value.tuple.Tuple3;
 
@@ -49,7 +48,9 @@ public interface StateAllocator extends Serializable {
   }
 
   default <T1, T2> StateRef<Tuple2<T1, T2>> newTuple2(StateRef<T1> element1, StateRef<T2> element2) {
-    return new StateRefImpl<>(getSession(), new Tuple2StateFactory<>(element1, element2));
+    return new StateRefImpl<>(
+        getSession(),
+        CompositeStateFactory.of(element1, element2, Tuple::of));
   }
 
   default <T1, T2, T3> StateRef<Tuple3<T1, T2, T3>> newTuple3(
@@ -58,7 +59,7 @@ public interface StateAllocator extends Serializable {
       StateRef<T3> element3) {
     return new StateRefImpl<>(
         getSession(),
-        new Tuple3StateFactory<>(element1, element2, element3));
+        CompositeStateFactory.of(element1, element2, element3, Tuple::of));
   }
 
   default <TState> StateRef<TState> newBy(StateFactory<TState> factory) {

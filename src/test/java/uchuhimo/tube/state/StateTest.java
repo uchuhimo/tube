@@ -102,6 +102,19 @@ public class StateTest {
     assertThat(account.owner.name, is("owner"));
   }
 
+  @Test
+  public void testNewCustomElement2StateByFactory() throws Exception {
+    final TubeSession session = TubeSession.newInstance();
+    final StateRef<MutableInt> depositState = session.newInt();
+    final StateRef<Person> personState = session.newBy(Person::new);
+    final StateRef<Account> accountState =
+        session.newBy(CompositeStateFactory.of(depositState, personState, Account::new));
+    final Account account = accountState.getStateFactory().newState(context);
+    assertThat(account.deposit.get(), is(0));
+    assertThat(account.owner.age, is(0));
+    assertThat(account.owner.name, is("default"));
+  }
+
   private static class Person {
     public String name;
     public int age;
