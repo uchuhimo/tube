@@ -19,26 +19,26 @@ public interface StateAllocator extends Serializable {
   TubeSession getSession();
 
   default StateRef<MutableInt> newInt() {
-    return new TemplateStateRefImpl<>(getSession(), context -> new MutableInt());
+    return new StateRefImpl<>(getSession(), context -> new MutableInt());
   }
 
   default StateRef<MutableLong> newLong() {
-    return new TemplateStateRefImpl<>(getSession(), context -> new MutableLong());
+    return new StateRefImpl<>(getSession(), context -> new MutableLong());
   }
 
   default StateRef<MutableDouble> newDouble() {
-    return new TemplateStateRefImpl<>(getSession(), context -> new MutableDouble());
+    return new StateRefImpl<>(getSession(), context -> new MutableDouble());
   }
 
   default <TKey, TValue> StateRef<Map<TKey, TValue>> newMap() {
-    return new TemplateStateRefImpl<>(getSession(), new StateFactory<Map<TKey, TValue>>() {
+    return new StateRefImpl<>(getSession(), new StateFactory<Map<TKey, TValue>>() {
       @Override
       public Map<TKey, TValue> newState(Context context) {
         return new HashMap<>();
       }
 
       @Override
-      public void deinit(Map<TKey, TValue> map) {
+      public void deinit(Map<TKey, TValue> map, Context context) {
         map.clear();
       }
     });
@@ -49,25 +49,20 @@ public interface StateAllocator extends Serializable {
   }
 
   default <T1, T2> StateRef<Tuple2<T1, T2>> newTuple2(StateRef<T1> element1, StateRef<T2> element2) {
-    return new TemplateStateRefImpl<>(
-        getSession(),
-        new Tuple2StateFactory<>(element1.getStateFactory(), element2.getStateFactory()));
+    return new StateRefImpl<>(getSession(), new Tuple2StateFactory<>(element1, element2));
   }
 
   default <T1, T2, T3> StateRef<Tuple3<T1, T2, T3>> newTuple3(
       StateRef<T1> element1,
       StateRef<T2> element2,
       StateRef<T3> element3) {
-    return new TemplateStateRefImpl<>(
+    return new StateRefImpl<>(
         getSession(),
-        new Tuple3StateFactory<>(
-            element1.getStateFactory(),
-            element2.getStateFactory(),
-            element3.getStateFactory()));
+        new Tuple3StateFactory<>(element1, element2, element3));
   }
 
   default <TState> StateRef<TState> newBy(StateFactory<TState> factory) {
-    return new TemplateStateRefImpl<>(getSession(), factory);
+    return new StateRefImpl<>(getSession(), factory);
   }
 
   default <TState> StateRef<TState> newBy(Function0<TState> contextFreeFactory) {

@@ -18,7 +18,7 @@ public interface InternalTubeSession extends TubeSession {
 
   @SuppressWarnings("unchecked")
   @Override
-  default <TState> StateRef<TState> getStateById(int id) {
+  default <TState> StateRef<TState> getStateRefById(int id) {
     return (StateRef<TState>) getStateRegistry().get(id);
   }
 }

@@ -2,10 +2,11 @@ package uchuhimo.tube;
 
 import uchuhimo.tube.state.StateAllocator;
 import uchuhimo.tube.state.StateRef;
+import uchuhimo.tube.state.StateRefContainer;
 
 import java.io.Serializable;
 
-public interface TubeSession extends StateAllocator, Serializable {
+public interface TubeSession extends StateAllocator, StateRefContainer, Serializable {
   static TubeSession newInstance() {
     return TubeSessionImpl.newInstance();
   }
@@ -13,12 +14,6 @@ public interface TubeSession extends StateAllocator, Serializable {
   int getId();
 
   <TState> int registerState(StateRef<TState> stateRef);
-
-  <TState> StateRef<TState> getStateById(int id);
-
-  default <TState> StateRef<TState> getStateById(int id, Class<TState> clazz) {
-    return getStateById(id);
-  }
 
   @Override
   default TubeSession getSession() {

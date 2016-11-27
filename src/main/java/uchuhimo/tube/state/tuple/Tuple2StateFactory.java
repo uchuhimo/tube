@@ -1,32 +1,29 @@
 package uchuhimo.tube.state.tuple;
 
-import uchuhimo.tube.state.StateFactory;
+import uchuhimo.tube.state.CompositeStateFactory;
+import uchuhimo.tube.state.StateRef;
 import uchuhimo.tube.value.tuple.Tuple;
 import uchuhimo.tube.value.tuple.Tuple2;
 
-public class Tuple2StateFactory<T1, T2> implements StateFactory<Tuple2<T1, T2>> {
-  private final StateFactory<T1> element1Factory;
-  private final StateFactory<T2> element2Factory;
+import org.eclipse.collections.impl.factory.Lists;
 
-  public Tuple2StateFactory(StateFactory<T1> element1Factory, StateFactory<T2> element2Factory) {
-    this.element1Factory = element1Factory;
-    this.element2Factory = element2Factory;
+import java.util.List;
+
+public class Tuple2StateFactory<T1, T2> implements CompositeStateFactory<Tuple2<T1, T2>> {
+  private final List<StateRef<?>> refs;
+
+  public Tuple2StateFactory(StateRef<T1> element1State, StateRef<T2> element2State) {
+    this.refs = Lists.fixedSize.of(element1State, element2State);
   }
 
   @Override
-  public Tuple2<T1, T2> newState(Context context) {
-    return Tuple.of(element1Factory.newState(context), element2Factory.newState(context));
+  public List<StateRef<?>> getRefs() {
+    return refs;
   }
 
+  @SuppressWarnings("unchecked")
   @Override
-  public void init(Tuple2<T1, T2> tuple) {
-    element1Factory.init(tuple.getElement1());
-    element2Factory.init(tuple.getElement2());
-  }
-
-  @Override
-  public void deinit(Tuple2<T1, T2> tuple) {
-    element1Factory.deinit(tuple.getElement1());
-    element2Factory.deinit(tuple.getElement2());
+  public Tuple2<T1, T2> newStateWithRefs(Context context, List<?> refs) {
+    return Tuple.of((T1) refs.get(0), (T2) refs.get(1));
   }
 }
