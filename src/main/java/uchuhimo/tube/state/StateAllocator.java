@@ -5,7 +5,9 @@ import uchuhimo.tube.TubeSession;
 import uchuhimo.tube.function.Function0;
 import uchuhimo.tube.state.tuple.Tuple2StateFactory;
 import uchuhimo.tube.state.tuple.Tuple3StateFactory;
+import uchuhimo.tube.value.primitive.MutableDouble;
 import uchuhimo.tube.value.primitive.MutableInt;
+import uchuhimo.tube.value.primitive.MutableLong;
 import uchuhimo.tube.value.tuple.Tuple2;
 import uchuhimo.tube.value.tuple.Tuple3;
 
@@ -20,6 +22,14 @@ public interface StateAllocator extends Serializable {
     return new TemplateStateRefImpl<>(getSession(), context -> new MutableInt());
   }
 
+  default StateRef<MutableLong> newLong() {
+    return new TemplateStateRefImpl<>(getSession(), context -> new MutableLong());
+  }
+
+  default StateRef<MutableDouble> newDouble() {
+    return new TemplateStateRefImpl<>(getSession(), context -> new MutableDouble());
+  }
+
   default <TKey, TValue> StateRef<Map<TKey, TValue>> newMap() {
     return new TemplateStateRefImpl<>(getSession(), new StateFactory<Map<TKey, TValue>>() {
       @Override
@@ -32,6 +42,10 @@ public interface StateAllocator extends Serializable {
         map.clear();
       }
     });
+  }
+
+  default <TKey, TValue> StateRef<Map<TKey, TValue>> newMap(Class<TKey> keyClass, Class<TValue> valueClass) {
+    return newMap();
   }
 
   default <T1, T2> StateRef<Tuple2<T1, T2>> newTuple2(StateRef<T1> element1, StateRef<T2> element2) {

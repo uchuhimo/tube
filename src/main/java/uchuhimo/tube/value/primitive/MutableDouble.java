@@ -1,21 +1,21 @@
 package uchuhimo.tube.value.primitive;
 
-public class MutableInt {
-  private int value;
+public class MutableDouble {
+  private double value;
 
-  public MutableInt() {
-    this(0);
+  public MutableDouble() {
+    this(0.0);
   }
 
-  public MutableInt(int value) {
+  public MutableDouble(double value) {
     this.value = value;
   }
 
-  public int get() {
+  public double get() {
     return value;
   }
 
-  public void set(int value) {
+  public void set(double value) {
     this.value = value;
   }
 

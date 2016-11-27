@@ -16,6 +16,10 @@ public interface TubeSession extends StateAllocator, Serializable {
 
   <TState> StateRef<TState> getStateById(int id);
 
+  default <TState> StateRef<TState> getStateById(int id, Class<TState> clazz) {
+    return getStateById(id);
+  }
+
   @Override
   default TubeSession getSession() {
     return this;

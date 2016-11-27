@@ -1,8 +1,6 @@
 package uchuhimo.tube.value.tuple;
 
 public interface Tuple {
-  int MAX_ELEMENT_COUNT = 3;
-
   static <T1, T2> Tuple2<T1, T2> of(T1 element1, T2 element2) {
     return Tuple2Impl.of(element1, element2);
   }
