@@ -3,6 +3,8 @@ package uchuhimo.tube.state;
 import uchuhimo.tube.TubeRuntimeException;
 import uchuhimo.tube.TubeSession;
 import uchuhimo.tube.function.Function0;
+import uchuhimo.tube.function.Function2;
+import uchuhimo.tube.function.Function3;
 import uchuhimo.tube.value.primitive.MutableDouble;
 import uchuhimo.tube.value.primitive.MutableInt;
 import uchuhimo.tube.value.primitive.MutableLong;
@@ -78,5 +80,21 @@ public interface StateAllocator extends Serializable {
         throw new TubeRuntimeException("fail to create state from class", exception);
       }
     });
+  }
+
+  default <T1, T2, TState> StateRef<TState> newComposite(
+      StateRef<T1> element1State,
+      StateRef<T2> element2State,
+      Function2<T1, T2, TState> stateGenerator) {
+    return newBy(new Element2StateFactory<>(element1State, element2State, stateGenerator));
+  }
+
+  default <T1, T2, T3, TState> StateRef<TState> newComposite(
+      StateRef<T1> element1State,
+      StateRef<T2> element2State,
+      StateRef<T3> element3State,
+      Function3<T1, T2, T3, TState> stateGenerator) {
+    return newBy(
+        new Element3StateFactory<>(element1State, element2State, element3State, stateGenerator));
   }
 }

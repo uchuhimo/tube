@@ -108,7 +108,7 @@ public class StateTest {
     final StateRef<MutableInt> depositState = session.newInt();
     final StateRef<Person> personState = session.newBy(Person::new);
     final StateRef<Account> accountState =
-        session.newBy(CompositeStateFactory.of(depositState, personState, Account::new));
+        session.newComposite(depositState, personState, Account::new);
     final Account account = accountState.getStateFactory().newState(context);
     assertThat(account.deposit.get(), is(0));
     assertThat(account.owner.age, is(0));
