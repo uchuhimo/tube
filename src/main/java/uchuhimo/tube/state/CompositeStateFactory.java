@@ -39,13 +39,13 @@ public interface CompositeStateFactory<TState> extends StateFactory<TState> {
   @Override
   default void init(TState state, Context context) {
     getRefs().forEach(ref ->
-        ((StateRef<Object>) ref).getStateFactory().init(context.getState(ref), context));
+        ((StateRef<Object>) ref).getFactory().init(context.getState(ref), context));
   }
 
   @SuppressWarnings("unchecked")
   @Override
   default void deinit(TState state, Context context) {
     getRefs().forEach(ref ->
-        ((StateRef<Object>) ref).getStateFactory().deinit(context.getState(ref), context));
+        ((StateRef<Object>) ref).getFactory().deinit(context.getState(ref), context));
   }
 }

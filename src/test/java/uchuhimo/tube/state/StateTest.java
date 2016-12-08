@@ -23,7 +23,7 @@ public class StateTest {
 
     @Override
     public <TState> TState getState(StateRef<TState> ref) {
-      return ref.getStateFactory().newState(context);
+      return ref.getFactory().newState(context);
     }
   };
 
@@ -31,9 +31,9 @@ public class StateTest {
   public void testNewIntState() throws Exception {
     final TubeSession session = TubeSession.newInstance();
     final StateRef<MutableInt> intState = session.newInt();
-    assertThat(intState.getSessionId(), is(session.getId()));
-    assertThat(intState, is(session.getStateRefById(intState.getId())));
-    final MutableInt mutableInt = intState.getStateFactory().newState(context);
+    assertThat(intState.getRepoId(), is(session.getId()));
+    assertThat(intState, is(session.getStateRefById(intState.getStateId())));
+    final MutableInt mutableInt = intState.getFactory().newState(context);
     assertThat(mutableInt.get(), is(0));
   }
 
@@ -43,7 +43,7 @@ public class StateTest {
     final StateRef<Tuple2<MutableInt, Map<Integer, Double>>> tupleState =
         session.newTuple2(session.newInt(), session.<Integer, Double>newMap());
     final Tuple2<MutableInt, Map<Integer, Double>> tuple =
-        tupleState.getStateFactory().newState(context);
+        tupleState.getFactory().newState(context);
     assertThat(tuple.getElement1().get(), is(0));
     assertThat(tuple.getElement2().entrySet(), empty());
   }
@@ -52,7 +52,7 @@ public class StateTest {
   public void testNewCustomStateByFactory() throws Exception {
     final TubeSession session = TubeSession.newInstance();
     final StateRef<Person> personState = session.newBy(context -> new Person("name", context.getPartitionId()));
-    final Person person = personState.getStateFactory().newState(context);
+    final Person person = personState.getFactory().newState(context);
     assertThat(person.name, is("name"));
     assertThat(person.age, is(1));
   }
@@ -61,7 +61,7 @@ public class StateTest {
   public void testNewCustomStateByContextFreeFactory() throws Exception {
     final TubeSession session = TubeSession.newInstance();
     final StateRef<Person> personState = session.newBy(Person::new);
-    final Person person = personState.getStateFactory().newState(context);
+    final Person person = personState.getFactory().newState(context);
     assertThat(person.name, is("default"));
     assertThat(person.age, is(0));
   }
@@ -70,7 +70,7 @@ public class StateTest {
   public void testNewCustomStateByClass() throws Exception {
     final TubeSession session = TubeSession.newInstance();
     final StateRef<Person> personState = session.newBy(Person.class);
-    final Person person = personState.getStateFactory().newState(context);
+    final Person person = personState.getFactory().newState(context);
     assertThat(person.name, is("default"));
     assertThat(person.age, is(0));
   }
@@ -96,7 +96,7 @@ public class StateTest {
         return new Account(deposit, person);
       }
     });
-    final Account account = accountState.getStateFactory().newState(context);
+    final Account account = accountState.getFactory().newState(context);
     assertThat(account.deposit.get(), is(3));
     assertThat(account.owner.age, is(12));
     assertThat(account.owner.name, is("owner"));
@@ -109,7 +109,7 @@ public class StateTest {
     final StateRef<Person> personState = session.newBy(Person::new);
     final StateRef<Account> accountState =
         session.newComposite(depositState, personState, Account::new);
-    final Account account = accountState.getStateFactory().newState(context);
+    final Account account = accountState.getFactory().newState(context);
     assertThat(account.deposit.get(), is(0));
     assertThat(account.owner.age, is(0));
     assertThat(account.owner.name, is("default"));
