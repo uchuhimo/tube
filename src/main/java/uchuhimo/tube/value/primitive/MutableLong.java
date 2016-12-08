@@ -1,6 +1,7 @@
 package uchuhimo.tube.value.primitive;
 
 public class MutableLong {
+
   private long value;
 
   public MutableLong() {

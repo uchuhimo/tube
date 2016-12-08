@@ -44,8 +44,8 @@ public class StateTest {
         session.newTuple2(session.newInt(), session.<Integer, Double>newMap());
     final Tuple2<MutableInt, Map<Integer, Double>> tuple =
         tupleState.getFactory().newState(context);
-    assertThat(tuple.getElement1().get(), is(0));
-    assertThat(tuple.getElement2().entrySet(), empty());
+    assertThat(tuple.field1().get(), is(0));
+    assertThat(tuple.field2().entrySet(), empty());
   }
 
   @Test

@@ -1,6 +1,7 @@
 package uchuhimo.tube.state;
 
 public interface PhaseRepo<TState> {
+
   StateRef<TState> getLenderStateRef();
 
   PhaseRef<TState> newWritable();

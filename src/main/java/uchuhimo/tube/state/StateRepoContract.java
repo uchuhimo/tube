@@ -14,11 +14,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 public interface StateRepoContract extends StateRepo {
+
   static <TState> StateRef<TState> newStateRef(
       StateRepoContract repo,
       StateFactory<TState> factory,
       int partitionCount) {
+
     return new StateRef<TState>() {
+
       private final int id = repo.register(this);
 
       @Override
@@ -96,6 +99,7 @@ public interface StateRepoContract extends StateRepo {
       StateRef<T1> element1,
       StateRef<T2> element2,
       int partitionCount) {
+
     return newStateRef(
         this,
         CompositeStateFactory.of(element1, element2, Tuple::of),
@@ -108,6 +112,7 @@ public interface StateRepoContract extends StateRepo {
       StateRef<T2> element2,
       StateRef<T3> element3,
       int partitionCount) {
+
     return newStateRef(
         this,
         CompositeStateFactory.of(element1, element2, element3, Tuple::of),

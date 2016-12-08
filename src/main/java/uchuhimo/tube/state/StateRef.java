@@ -3,6 +3,7 @@ package uchuhimo.tube.state;
 import java.io.Serializable;
 
 public interface StateRef<TState> extends Serializable {
+
   int getStateId();
 
   StateRepo getRepo();

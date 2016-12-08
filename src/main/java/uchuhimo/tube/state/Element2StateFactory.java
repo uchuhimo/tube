@@ -7,6 +7,7 @@ import org.eclipse.collections.impl.factory.Lists;
 import java.util.List;
 
 public class Element2StateFactory<T1, T2, TState> implements CompositeStateFactory<TState> {
+
   private final List<StateRef<?>> refs;
   private final Function2<T1, T2, TState> stateGenerator;
 

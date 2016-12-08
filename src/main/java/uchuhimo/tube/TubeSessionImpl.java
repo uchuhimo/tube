@@ -15,6 +15,7 @@ import org.eclipse.collections.impl.tuple.primitive.PrimitiveTuples;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class TubeSessionImpl implements TubeSession, StateRepoContract {
+
   private static final AtomicInteger sessionIdGenerator = new AtomicInteger(0);
   private final AtomicInteger stateIdGenerator = new AtomicInteger(0);
   private final MutableIntObjectMap<StateInfo> stateRegistry = IntObjectMaps.mutable.empty();
@@ -35,7 +36,7 @@ public class TubeSessionImpl implements TubeSession, StateRepoContract {
   @Override
   public <TState> int register(StateRef<TState> stateRef) {
     final int stateId = stateIdGenerator.getAndIncrement();
-    stateRegistry.put(stateId, new StateInfo(stateRef));
+    stateRegistry.put(stateId, new StateInfo<>(stateRef));
     return stateId;
   }
 
@@ -46,6 +47,7 @@ public class TubeSessionImpl implements TubeSession, StateRepoContract {
     return new PhaseRepoContract<TState>() {
       private final AtomicInteger phaseIdGenerator = new AtomicInteger(0);
 
+      @SuppressWarnings("unchecked")
       @Override
       public StateRef<TState> getLenderStateRef() {
         return stateInfo.stateRef;
@@ -76,15 +78,16 @@ public class TubeSessionImpl implements TubeSession, StateRepoContract {
     return defaultPartitionCount;
   }
 
-  private static class StateInfo {
-    private final StateRef stateRef;
+  private static class StateInfo<TState> {
+
+    private final StateRef<TState> stateRef;
     private boolean borrowed = false;
 
-    public StateInfo(StateRef stateRef) {
+    public StateInfo(StateRef<TState> stateRef) {
       this.stateRef = stateRef;
     }
 
-    public StateRef getStateRef() {
+    public StateRef<TState> getStateRef() {
       return stateRef;
     }
 

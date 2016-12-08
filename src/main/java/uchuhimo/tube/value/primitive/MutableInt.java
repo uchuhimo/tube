@@ -1,6 +1,7 @@
 package uchuhimo.tube.value.primitive;
 
 public class MutableInt {
+
   private int value;
 
   public MutableInt() {

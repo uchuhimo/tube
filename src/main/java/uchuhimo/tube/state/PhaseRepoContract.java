@@ -3,8 +3,13 @@ package uchuhimo.tube.state;
 import org.eclipse.collections.api.tuple.primitive.IntIntPair;
 
 public interface PhaseRepoContract<TState> extends PhaseRepo<TState> {
-  static <TState> PhaseRef<TState> newPhaseRef(PhaseRepoContract<TState> phaseRepo, PhaseType phaseType) {
+
+  static <TState> PhaseRef<TState> newPhaseRef(
+      PhaseRepoContract<TState> phaseRepo,
+      PhaseType phaseType) {
+
     return new PhaseRef<TState>() {
+
       private final IntIntPair stateIdAndPhaseId = phaseRepo.register(this);
 
       @Override

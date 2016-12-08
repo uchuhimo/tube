@@ -1,6 +1,7 @@
 package uchuhimo.tube.value.primitive;
 
 public class MutableDouble {
+
   private double value;
 
   public MutableDouble() {

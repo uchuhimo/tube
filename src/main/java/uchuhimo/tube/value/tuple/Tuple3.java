@@ -5,9 +5,10 @@ import org.immutables.value.Value;
 @Value.Immutable
 @TupleStyle
 public interface Tuple3<T1, T2, T3> extends Tuple {
-  T1 getElement1();
 
-  T2 getElement2();
+  T1 field1();
 
-  T3 getElement3();
+  T2 field2();
+
+  T3 field3();
 }

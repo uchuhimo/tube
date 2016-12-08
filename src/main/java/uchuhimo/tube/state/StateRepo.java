@@ -14,6 +14,7 @@ import java.io.Serializable;
 import java.util.Map;
 
 public interface StateRepo extends Serializable {
+
   int getId();
 
   <TState> StateRef<TState> getStateRefById(int id);
@@ -51,6 +52,7 @@ public interface StateRepo extends Serializable {
   default <TKey, TValue> StateRef<Map<TKey, TValue>> newMap(
       Class<TKey> keyClass,
       Class<TValue> valueClass) {
+
     return newMap(keyClass, valueClass, getDefaultPartitionCount());
   }
 
@@ -58,6 +60,7 @@ public interface StateRepo extends Serializable {
       Class<TKey> keyClass,
       Class<TValue> valueClass,
       int partitionCount) {
+
     return newMap(partitionCount);
   }
 
@@ -69,6 +72,7 @@ public interface StateRepo extends Serializable {
   default <T1, T2> StateRef<Tuple2<T1, T2>> newTuple2(
       StateRef<T1> element1,
       StateRef<T2> element2) {
+
     return newTuple2(element1, element2, getDefaultPartitionCount());
   }
 
@@ -82,6 +86,7 @@ public interface StateRepo extends Serializable {
       StateRef<T1> element1,
       StateRef<T2> element2,
       StateRef<T3> element3) {
+
     return newTuple3(element1, element2, element3, getDefaultPartitionCount());
   }
 
@@ -119,6 +124,7 @@ public interface StateRepo extends Serializable {
       StateRef<T1> element1State,
       StateRef<T2> element2State,
       Function2<T1, T2, TState> stateGenerator) {
+
     return newComposite(element1State, element2State, stateGenerator, getDefaultPartitionCount());
   }
 
@@ -127,6 +133,7 @@ public interface StateRepo extends Serializable {
       StateRef<T2> element2State,
       Function2<T1, T2, TState> stateGenerator,
       int partitionCount) {
+
     return newBy(
         new Element2StateFactory<>(element1State, element2State, stateGenerator),
         partitionCount);
@@ -137,6 +144,7 @@ public interface StateRepo extends Serializable {
       StateRef<T2> element2State,
       StateRef<T3> element3State,
       Function3<T1, T2, T3, TState> stateGenerator) {
+
     return newComposite(
         element1State,
         element2State,
@@ -151,6 +159,7 @@ public interface StateRepo extends Serializable {
       StateRef<T3> element3State,
       Function3<T1, T2, T3, TState> stateGenerator,
       int partitionCount) {
+
     return newBy(
         new Element3StateFactory<>(element1State, element2State, element3State, stateGenerator),
         partitionCount);

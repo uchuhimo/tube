@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 
 @FunctionalInterface
 public interface Function0<TResult> extends Supplier<TResult>, Serializable {
+
   TResult apply();
 
   @Override
