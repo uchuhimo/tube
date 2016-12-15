@@ -1,71 +1,107 @@
 package uchuhimo.tube;
 
-import uchuhimo.tube.state.PhaseRef;
-import uchuhimo.tube.state.PhaseRepo;
-import uchuhimo.tube.state.PhaseRepoContract;
+import uchuhimo.tube.state.StateFactory;
 import uchuhimo.tube.state.StateRef;
-import uchuhimo.tube.state.StateRepoContract;
+import uchuhimo.tube.state.StateRepo;
+import uchuhimo.tube.state.StateRepoImpl;
+import uchuhimo.tube.value.primitive.MutableDouble;
+import uchuhimo.tube.value.primitive.MutableInt;
+import uchuhimo.tube.value.primitive.MutableLong;
+import uchuhimo.tube.value.tuple.Tuple2;
+import uchuhimo.tube.value.tuple.Tuple3;
 
-import com.google.common.base.Preconditions;
-import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
-import org.eclipse.collections.api.tuple.primitive.IntIntPair;
-import org.eclipse.collections.impl.factory.primitive.IntObjectMaps;
-import org.eclipse.collections.impl.tuple.primitive.PrimitiveTuples;
+import java.util.Collection;
+import java.util.Map;
 
-import java.util.concurrent.atomic.AtomicInteger;
+public class TubeSessionImpl implements TubeSession {
 
-public class TubeSessionImpl implements TubeSession, StateRepoContract {
-
-  private static final AtomicInteger sessionIdGenerator = new AtomicInteger(0);
-  private final AtomicInteger stateIdGenerator = new AtomicInteger(0);
-  private final MutableIntObjectMap<StateInfo> stateRegistry = IntObjectMaps.mutable.empty();
+  private static int nextSessionId = 0;
   private final int id;
-  private final int defaultPartitionCount;
+  private final StateRepo stateRepo;
 
-  public TubeSessionImpl(int id, int defaultPartitionCount) {
-    this.id = id;
-    this.defaultPartitionCount = defaultPartitionCount;
+  public TubeSessionImpl(InitContext context) {
+    this.id = context.register(this);
+    this.stateRepo = context.getStateRepo();
   }
 
   public static TubeSession newInstance() {
-    return new TubeSessionImpl(
-        sessionIdGenerator.getAndIncrement(),
-        Runtime.getRuntime().availableProcessors());
-  }
+    return new TubeSessionImpl(new InitContext() {
+      private int sessionId;
 
-  @Override
-  public <TState> int register(StateRef<TState> stateRef) {
-    final int stateId = stateIdGenerator.getAndIncrement();
-    stateRegistry.put(stateId, new StateInfo<>(stateRef));
-    return stateId;
-  }
-
-  @Override
-  public <TState> PhaseRepo<TState> registerPhaseGroup(StateRef<TState> stateRef) {
-    Preconditions.checkArgument(stateRef.getRepoId() == getId());
-    final StateInfo stateInfo = stateRegistry.get(stateRef.getStateId());
-    return new PhaseRepoContract<TState>() {
-      private final AtomicInteger phaseIdGenerator = new AtomicInteger(0);
-
-      @SuppressWarnings("unchecked")
       @Override
-      public StateRef<TState> getLenderStateRef() {
-        return stateInfo.stateRef;
+      public int register(TubeSession session) {
+        sessionId = TubeSessionImpl.nextSessionId;
+        nextSessionId++;
+        return sessionId;
       }
 
       @Override
-      public <TState1> IntIntPair register(PhaseRef<TState1> phaseRef) {
-        final int stateId = TubeSessionImpl.this.register(phaseRef);
-        final int phaseId = phaseIdGenerator.getAndIncrement();
-        return PrimitiveTuples.pair(stateId, phaseId);
+      public StateRepo getStateRepo() {
+        return new StateRepoImpl(new StateRepoImpl.InitContext() {
+          @Override
+          public int register(StateRepo stateRepo) {
+            return sessionId;
+          }
+
+          @Override
+          public int getDefaultPartitionCount() {
+            return Runtime.getRuntime().availableProcessors();
+          }
+        });
       }
-    };
+    });
   }
 
-  @SuppressWarnings("unchecked")
+  @Override
+  public Collection<StateRef<?>> getRootRefs() {
+    return stateRepo.getRootRefs();
+  }
+
   @Override
   public <TState> StateRef<TState> getStateRefById(int id) {
-    return (StateRef<TState>) stateRegistry.get(id).getStateRef();
+    return stateRepo.getStateRefById(id);
+  }
+
+  @Override
+  public int getDefaultPartitionCount() {
+    return stateRepo.getDefaultPartitionCount();
+  }
+
+  @Override
+  public StateRef<MutableInt> newInt(int partitionCount) {
+    return stateRepo.newInt(partitionCount);
+  }
+
+  @Override
+  public StateRef<MutableLong> newLong(int partitionCount) {
+    return stateRepo.newLong(partitionCount);
+  }
+
+  @Override
+  public StateRef<MutableDouble> newDouble(int partitionCount) {
+    return stateRepo.newDouble(partitionCount);
+  }
+
+  @Override
+  public <TKey, TValue> StateRef<Map<TKey, TValue>> newMap(int partitionCount) {
+    return stateRepo.newMap(partitionCount);
+  }
+
+  @Override
+  public <T1, T2> StateRef<Tuple2<T1, T2>> newTuple2(
+      StateRef<T1> element1, StateRef<T2> element2, int partitionCount) {
+    return stateRepo.newTuple2(element1, element2, partitionCount);
+  }
+
+  @Override
+  public <T1, T2, T3> StateRef<Tuple3<T1, T2, T3>> newTuple3(
+      StateRef<T1> element1, StateRef<T2> element2, StateRef<T3> element3, int partitionCount) {
+    return stateRepo.newTuple3(element1, element2, element3, partitionCount);
+  }
+
+  @Override
+  public <TState> StateRef<TState> newBy(StateFactory<TState> factory, int partitionCount) {
+    return stateRepo.newBy(factory, partitionCount);
   }
 
   @Override
@@ -73,30 +109,10 @@ public class TubeSessionImpl implements TubeSession, StateRepoContract {
     return id;
   }
 
-  @Override
-  public int getDefaultPartitionCount() {
-    return defaultPartitionCount;
-  }
+  public interface InitContext {
 
-  private static class StateInfo<TState> {
+    int register(TubeSession session);
 
-    private final StateRef<TState> stateRef;
-    private boolean borrowed = false;
-
-    public StateInfo(StateRef<TState> stateRef) {
-      this.stateRef = stateRef;
-    }
-
-    public StateRef<TState> getStateRef() {
-      return stateRef;
-    }
-
-    public void borrow() {
-      borrowed = true;
-    }
-
-    public boolean isBorrowed() {
-      return borrowed;
-    }
+    StateRepo getStateRepo();
   }
 }

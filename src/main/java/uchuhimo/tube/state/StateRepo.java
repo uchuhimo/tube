@@ -11,11 +11,14 @@ import uchuhimo.tube.value.tuple.Tuple2;
 import uchuhimo.tube.value.tuple.Tuple3;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Map;
 
 public interface StateRepo extends Serializable {
 
   int getId();
+
+  Collection<StateRef<?>> getRootRefs();
 
   <TState> StateRef<TState> getStateRefById(int id);
 
@@ -164,6 +167,4 @@ public interface StateRepo extends Serializable {
         new Element3StateFactory<>(element1State, element2State, element3State, stateGenerator),
         partitionCount);
   }
-
-  <TState> PhaseGroup<TState> newPhaseGroup(StateRef<TState> stateRef, int phaseCount);
 }

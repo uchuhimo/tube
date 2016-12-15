@@ -98,7 +98,7 @@ idea {
         jdkName = "1.8.0_51"
         languageLevel = "1.8"
         vcs = "Git"
-        
+
         ipr.withXml { provider ->
             def gradleSettings = """
   <component name="GradleSettings">
