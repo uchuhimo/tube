@@ -2,8 +2,11 @@ package uchuhimo.tube.util;
 
 import uchuhimo.tube.TubeRuntimeException;
 
-public enum Thrown {
-  ;
+@Utility
+public final class Thrown {
+
+  private Thrown() {
+  }
 
   public static UnreachableCodeException unreachable() {
     return new UnreachableCodeException();

@@ -4,11 +4,13 @@ public class PhaseRefImpl<TState> extends StateRefImpl<TState> implements PhaseR
 
   private final int id;
   private final PhaseType type;
+  private final StateRef<TState> lender;
 
   public PhaseRefImpl(InitContext<TState> context) {
     super(context.getStateRefContext());
     this.id = context.register(this);
     this.type = context.getType();
+    this.lender = context.getLender();
   }
 
   @Override
@@ -19,6 +21,11 @@ public class PhaseRefImpl<TState> extends StateRefImpl<TState> implements PhaseR
   @Override
   public PhaseType getPhaseType() {
     return type;
+  }
+
+  @Override
+  public StateRef<TState> getLender() {
+    return lender;
   }
 
   @Override
@@ -38,5 +45,7 @@ public class PhaseRefImpl<TState> extends StateRefImpl<TState> implements PhaseR
     int register(PhaseRef<TState> phaseRef);
 
     PhaseType getType();
+
+    StateRef<TState> getLender();
   }
 }

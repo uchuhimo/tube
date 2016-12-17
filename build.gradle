@@ -73,6 +73,10 @@ tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
 }
 
+tasks.withType(Test) {
+    testLogging.showStandardStreams = true
+}
+
 findbugs {
     ignoreFailures = true
     effort = "max"

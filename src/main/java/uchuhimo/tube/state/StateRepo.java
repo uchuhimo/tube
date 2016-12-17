@@ -7,6 +7,7 @@ import uchuhimo.tube.function.Function3;
 import uchuhimo.tube.value.primitive.MutableDouble;
 import uchuhimo.tube.value.primitive.MutableInt;
 import uchuhimo.tube.value.primitive.MutableLong;
+import uchuhimo.tube.value.primitive.MutableString;
 import uchuhimo.tube.value.tuple.Tuple2;
 import uchuhimo.tube.value.tuple.Tuple3;
 
@@ -44,6 +45,12 @@ public interface StateRepo extends Serializable {
 
   default StateRef<MutableDouble> newDouble() {
     return newDouble(getDefaultPartitionCount());
+  }
+
+  StateRef<MutableString> newString(int partitionCount);
+
+  default StateRef<MutableString> newString() {
+    return newString(getDefaultPartitionCount());
   }
 
   <TKey, TValue> StateRef<Map<TKey, TValue>> newMap(int partitionCount);

@@ -54,7 +54,7 @@ public class StateRefImpl<TState> implements StateRef<TState> {
       private int nextPhaseId = 0;
 
       @Override
-      public StateRef<TState> getLenderStateRef() {
+      public StateRef<TState> getLender() {
         return StateRefImpl.this;
       }
 
@@ -79,6 +79,11 @@ public class StateRefImpl<TState> implements StateRef<TState> {
           @Override
           public PhaseType getType() {
             return phaseType;
+          }
+
+          @Override
+          public StateRef<TState> getLender() {
+            return StateRefImpl.this;
           }
         });
       }

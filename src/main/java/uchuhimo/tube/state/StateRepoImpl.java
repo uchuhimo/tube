@@ -3,6 +3,7 @@ package uchuhimo.tube.state;
 import uchuhimo.tube.value.primitive.MutableDouble;
 import uchuhimo.tube.value.primitive.MutableInt;
 import uchuhimo.tube.value.primitive.MutableLong;
+import uchuhimo.tube.value.primitive.MutableString;
 import uchuhimo.tube.value.tuple.Tuple;
 import uchuhimo.tube.value.tuple.Tuple2;
 import uchuhimo.tube.value.tuple.Tuple3;
@@ -29,15 +30,13 @@ public class StateRepoImpl implements StateRepo {
     this.id = context.register(this);
   }
 
-  <TState> StateRef<TState> newStateRef(
-      StateRepoImpl repo,
-      StateFactory<TState> factory,
-      int partitionCount) {
+  private <TState> StateRef<TState> newStateRef(StateFactory<TState> factory, int partitionCount) {
 
     return new StateRefImpl<>(new StateRefImpl.InitContext<TState>() {
+
       @Override
       public StateRepo getRepo() {
-        return repo;
+        return StateRepoImpl.this;
       }
 
       @Override
@@ -86,22 +85,27 @@ public class StateRepoImpl implements StateRepo {
 
   @Override
   public StateRef<MutableInt> newInt(int partitionCount) {
-    return newStateRef(this, context -> new MutableInt(), partitionCount);
+    return newStateRef(context -> new MutableInt(), partitionCount);
   }
 
   @Override
   public StateRef<MutableLong> newLong(int partitionCount) {
-    return newStateRef(this, context -> new MutableLong(), partitionCount);
+    return newStateRef(context -> new MutableLong(), partitionCount);
   }
 
   @Override
   public StateRef<MutableDouble> newDouble(int partitionCount) {
-    return newStateRef(this, context -> new MutableDouble(), partitionCount);
+    return newStateRef(context -> new MutableDouble(), partitionCount);
+  }
+
+  @Override
+  public StateRef<MutableString> newString(int partitionCount) {
+    return newStateRef(context -> new MutableString(), partitionCount);
   }
 
   @Override
   public <TKey, TValue> StateRef<Map<TKey, TValue>> newMap(int partitionCount) {
-    return newStateRef(this, context -> new HashMap<>(), partitionCount);
+    return newStateRef(context -> new HashMap<>(), partitionCount);
   }
 
   @Override
@@ -111,7 +115,6 @@ public class StateRepoImpl implements StateRepo {
       int partitionCount) {
 
     return newStateRef(
-        this,
         CompositeStateFactory.of(element1, element2, Tuple::of),
         partitionCount);
   }
@@ -124,14 +127,13 @@ public class StateRepoImpl implements StateRepo {
       int partitionCount) {
 
     return newStateRef(
-        this,
         CompositeStateFactory.of(element1, element2, element3, Tuple::of),
         partitionCount);
   }
 
   @Override
   public <TState> StateRef<TState> newBy(StateFactory<TState> factory, int partitionCount) {
-    return newStateRef(this, factory, partitionCount);
+    return newStateRef(factory, partitionCount);
   }
 
   public interface InitContext {

@@ -2,7 +2,7 @@ package uchuhimo.tube.state;
 
 public interface PhaseRepo<TState> {
 
-  StateRef<TState> getLenderStateRef();
+  StateRef<TState> getLender();
 
   PhaseRef<TState> newPhase(PhaseType phaseType);
 
