@@ -6,3 +6,5 @@ pluginRepositories {
 }
 
 rootProject.name = 'tube'
+
+include 'tube-api', 'tube-impl'
