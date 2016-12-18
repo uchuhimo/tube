@@ -9,6 +9,7 @@ import uchuhimo.tube.value.primitive.MutableInt;
 import org.junit.Test;
 
 public class PhaseRepoTest {
+
   @Test
   public void testNewPhaseFromRepo() throws Exception {
     final StateRef<MutableInt> intState = Mock.newStateRepo().newInt();

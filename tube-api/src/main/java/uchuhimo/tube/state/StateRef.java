@@ -9,10 +9,9 @@ import org.eclipse.collections.impl.factory.Lists;
 import org.eclipse.collections.impl.factory.Maps;
 import org.eclipse.collections.impl.utility.ArrayIterate;
 
-import java.io.Serializable;
 import java.util.Collection;
 
-public interface StateRef<TState> extends Serializable {
+public interface StateRef<TState> {
 
   int getStateId();
 

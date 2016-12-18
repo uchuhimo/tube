@@ -8,9 +8,13 @@ import uchuhimo.tube.value.tuple.Tuple;
 import uchuhimo.tube.value.tuple.Tuple2;
 import uchuhimo.tube.value.tuple.Tuple3;
 
+import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
+import org.eclipse.collections.api.set.sorted.MutableSortedSet;
+import org.eclipse.collections.impl.factory.Lists;
 import org.eclipse.collections.impl.factory.Sets;
 import org.eclipse.collections.impl.factory.primitive.IntObjectMaps;
+import org.eclipse.collections.impl.set.mutable.SetAdapter;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -134,6 +138,55 @@ public class StateRepoImpl implements StateRepo {
   @Override
   public <TState> StateRef<TState> newBy(StateFactory<TState> factory, int partitionCount) {
     return newStateRef(factory, partitionCount);
+  }
+
+  @Override
+  public String dumpRefs() {
+    final StringBuilder output = new StringBuilder();
+    final MutableSortedSet<StateRef<?>> sortedRootRefs =
+        SetAdapter.adapt(rootRefs).toSortedSetBy(StateRef::getStateId);
+    int restRootRefCount = sortedRootRefs.size();
+    for (StateRef<?> rootRef : sortedRootRefs) {
+      restRootRefCount--;
+      if (restRootRefCount == 0) {
+        dumpRefsInRecursion(rootRef, output, true, Lists.immutable.empty());
+      } else {
+        dumpRefsInRecursion(rootRef, output, false, Lists.immutable.empty());
+      }
+    }
+    return output.toString();
+  }
+
+  private <TState> void dumpRefsInRecursion(
+      StateRef<TState> ref,
+      StringBuilder output,
+      boolean isLastChild,
+      ImmutableList<Boolean> levelToIsLastChild) {
+    for (Boolean isLastChildInCurrentLevel : levelToIsLastChild) {
+      if (isLastChildInCurrentLevel) {
+        output.append("     ");
+      } else {
+        output.append("|    ");
+      }
+    }
+    if (isLastChild) {
+      output.append("\\--- ");
+    } else {
+      output.append("+--- ");
+    }
+    output.append(ref.toString()).append("\n");
+    if (ref.isBorrowed()) {
+      int restChildCount = ref.getPhases().size();
+      final ImmutableList<Boolean> newLevelToIsLastChild = levelToIsLastChild.newWith(isLastChild);
+      for (StateRef<TState> childRef : ref.getPhases()) {
+        restChildCount--;
+        if (restChildCount == 0) {
+          dumpRefsInRecursion(childRef, output, true, newLevelToIsLastChild);
+        } else {
+          dumpRefsInRecursion(childRef, output, false, newLevelToIsLastChild);
+        }
+      }
+    }
   }
 
   public interface InitContext {

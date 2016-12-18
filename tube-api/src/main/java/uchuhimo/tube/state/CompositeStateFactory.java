@@ -3,6 +3,8 @@ package uchuhimo.tube.state;
 import uchuhimo.tube.function.Function2;
 import uchuhimo.tube.function.Function3;
 
+import org.eclipse.collections.impl.list.mutable.ListAdapter;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -50,5 +52,20 @@ public interface CompositeStateFactory<TState> extends StateFactory<TState> {
   default void deinit(TState state, Context context) {
     getRefs().forEach(ref ->
         ((StateRef<Object>) ref).getFactory().deinit(context.getState(ref), context));
+  }
+
+  @Override
+  default String getInfo() {
+    final StringBuilder builder = new StringBuilder();
+    return ListAdapter.adapt(getRefs())
+        .injectInto(
+            builder.append("composite("),
+            (output, ref) ->
+                output
+                    .append(ref.getStateId())
+                    .append(":")
+                    .append(ref.getFactory().getInfo())
+                    .append(", "))
+        .delete(builder.length() - 2, builder.length()).append(")").toString();
   }
 }

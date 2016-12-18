@@ -177,6 +177,21 @@ public class StateRepoTest {
     assertThat(personWithSex.sex.get(), is("male"));
   }
 
+  @Test
+  public void testDumpRefs() throws Exception {
+    final StateRepo stateRepo = Mock.newStateRepo();
+    final StateRef<MutableInt> intState = stateRepo.newInt();
+    final EnumPhaseGroup<MutableInt, OnePass> onePassGroup = intState.phaseBy(OnePass.class);
+    onePassGroup.getPhaseByEnum(OnePass.Update).phaseBy(2);
+    final StateRef<MutableDouble> doubleState = stateRepo.newDouble();
+    final StateRef<MutableString> stringState = stateRepo.newString();
+    final StateRef<MutableLong> longState = stateRepo.newLong();
+    final StateRef<Map<Integer, Long>> mapState = stateRepo.newMap(Integer.class, Long.class);
+    stateRepo.newTuple2(doubleState, stringState);
+    stateRepo.newTuple3(longState, mapState, intState);
+    System.out.println(stateRepo.dumpRefs());
+  }
+
   private static class Person {
     public String name;
     public int age;

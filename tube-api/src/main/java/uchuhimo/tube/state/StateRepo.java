@@ -11,11 +11,10 @@ import uchuhimo.tube.value.primitive.MutableString;
 import uchuhimo.tube.value.tuple.Tuple2;
 import uchuhimo.tube.value.tuple.Tuple3;
 
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
 
-public interface StateRepo extends Serializable {
+public interface StateRepo {
 
   int getId();
 
@@ -174,4 +173,6 @@ public interface StateRepo extends Serializable {
         new Element3StateFactory<>(element1State, element2State, element3State, stateGenerator),
         partitionCount);
   }
+
+  String dumpRefs();
 }

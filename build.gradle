@@ -65,8 +65,10 @@ subprojects {
     
     findbugs {
         ignoreFailures = true
+        //effort = "default"
         effort = "max"
-        reportLevel = "medium"
+        //reportLevel = "medium"
+        reportLevel = "low"
         excludeFilter = file("${rootProject.projectDir}/config/findbugs/excludeFilter.xml")
     }
     

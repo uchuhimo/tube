@@ -31,7 +31,7 @@ dependencies {
 
     compile(
             project(":tube-api")
-            ,"org.slf4j:slf4j-api:${slf4jVersion}"
+            , "org.slf4j:slf4j-api:${slf4jVersion}"
             , "org.slf4j:slf4j-log4j12:${slf4jVersion}"
             , "org.eclipse.collections:eclipse-collections-api:${eclipseCollectionsVersion}"
             , "org.eclipse.collections:eclipse-collections:${eclipseCollectionsVersion}"

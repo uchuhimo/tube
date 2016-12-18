@@ -29,13 +29,16 @@ public class PhaseRefImpl<TState> extends StateRefImpl<TState> implements PhaseR
   }
 
   @Override
-  public boolean equals(Object other) {
-    return super.equals(other);
-  }
-
-  @Override
-  public int hashCode() {
-    return super.hashCode();
+  public String toString() {
+    return "PhaseRefRef[" + getStateId() + "]{"
+        + "phase id=" + getPhaseId()
+        + ", type=" + getPhaseType().name()
+        + ", factory=" + getFactory().getInfo()
+        + ", partitionCount=" + getPartitionCount()
+        + ", lender=" + getLender().getStateId()
+        + ", borrowed=" + isBorrowed()
+        + ", repo=" + getRepoId()
+        + '}';
   }
 
   public interface InitContext<TState> {

@@ -101,4 +101,17 @@ public class StateRefTest {
         is(originState.getRepo().getDefaultPartitionCount()));
     assertThat(copyState.getPartitionCount(), is(10));
   }
+
+  @Test
+  public void testMultiLevelBorrow() throws Exception {
+    final StateRef<MutableInt> firstLevel = Mock.newStateRepo().newInt();
+    assertThat(firstLevel.isBorrowed(), is(false));
+    final PhaseRef<MutableInt> secondLevel = firstLevel.borrow().newPhase();
+    assertThat(firstLevel.isBorrowed(), is(true));
+    assertThat(secondLevel.isBorrowed(), is(false));
+    final PhaseRef<MutableInt> thirdLevel = secondLevel.borrow().newPhase();
+    assertThat(secondLevel.isBorrowed(), is(true));
+    assertThat(thirdLevel.isBorrowed(), is(false));
+    assertThat(((PhaseRef) thirdLevel.getLender()).getLender(), is(firstLevel));
+  }
 }

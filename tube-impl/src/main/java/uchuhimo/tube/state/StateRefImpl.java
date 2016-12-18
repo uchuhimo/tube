@@ -101,27 +101,13 @@ public class StateRefImpl<TState> implements StateRef<TState> {
   }
 
   @Override
-  public boolean equals(Object other) {
-    if (this == other) {
-      return true;
-    }
-    if (other == null || getClass() != other.getClass()) {
-      return false;
-    }
-
-    StateRef<?> stateRef = (StateRef<?>) other;
-
-    if (getStateId() != stateRef.getStateId()) {
-      return false;
-    }
-    return getRepoId() == stateRef.getRepoId();
-  }
-
-  @Override
-  public int hashCode() {
-    int result = getStateId();
-    result = 31 * result + getRepoId();
-    return result;
+  public String toString() {
+    return "StateRef[" + getStateId() + "]{"
+        + "factory=" + getFactory().getInfo()
+        + ", partitionCount=" + getPartitionCount()
+        + ", borrowed=" + isBorrowed()
+        + ", repo=" + getRepoId()
+        + '}';
   }
 
   public interface InitContext<TState> {
