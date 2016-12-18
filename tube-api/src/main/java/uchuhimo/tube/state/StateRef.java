@@ -31,7 +31,7 @@ public interface StateRef<TState> {
 
   Collection<PhaseRef<TState>> getPhases();
 
-  PhaseRef<TState> getPhaseById(int phaseId);
+  PhaseRef<TState> getPhase(int phaseId);
 
   default StateRef<TState> copy() {
     return getRepo().newBy(getFactory(), getPartitionCount());

@@ -29,12 +29,12 @@ public class StateRepoTest {
     final StateRef<MutableInt> intState = stateRepo.newInt();
     final PhaseGroup<MutableInt> phases = intState.phaseBy(2);
     assertThat(stateRepo.getRootRefs(), contains(intState));
-    assertThat(stateRepo.getStateRefById(intState.getStateId()), is(intState));
+    assertThat(stateRepo.getStateRef(intState.getStateId()), is(intState));
     assertThat(
-        stateRepo.getStateRefById(phases.getPhases().get(0).getStateId()),
+        stateRepo.getStateRef(phases.getPhases().get(0).getStateId()),
         is(phases.getPhases().get(0)));
     assertThat(
-        stateRepo.getStateRefById(phases.getPhases().get(1).getStateId(), MutableInt.class),
+        stateRepo.getStateRef(phases.getPhases().get(1).getStateId(), MutableInt.class),
         is(phases.getPhases().get(1)));
   }
 
@@ -182,7 +182,7 @@ public class StateRepoTest {
     final StateRepo stateRepo = Mock.newStateRepo();
     final StateRef<MutableInt> intState = stateRepo.newInt();
     final EnumPhaseGroup<MutableInt, OnePass> onePassGroup = intState.phaseBy(OnePass.class);
-    onePassGroup.getPhaseByEnum(OnePass.Update).phaseBy(2);
+    onePassGroup.getPhase(OnePass.Update).phaseBy(2);
     final StateRef<MutableDouble> doubleState = stateRepo.newDouble();
     final StateRef<MutableString> stringState = stateRepo.newString();
     final StateRef<MutableLong> longState = stateRepo.newLong();

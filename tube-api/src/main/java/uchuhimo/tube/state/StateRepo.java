@@ -20,10 +20,10 @@ public interface StateRepo {
 
   Collection<StateRef<?>> getRootRefs();
 
-  <TState> StateRef<TState> getStateRefById(int id);
+  <TState> StateRef<TState> getStateRef(int id);
 
-  default <TState> StateRef<TState> getStateRefById(int id, Class<TState> clazz) {
-    return getStateRefById(id);
+  default <TState> StateRef<TState> getStateRef(int id, Class<TState> clazz) {
+    return getStateRef(id);
   }
 
   int getDefaultPartitionCount();

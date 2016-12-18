@@ -1,5 +1,6 @@
 package uchuhimo.tube.state;
 
+import java.util.Collections;
 import java.util.List;
 
 public interface PhaseGroup<TState> {
@@ -8,7 +9,7 @@ public interface PhaseGroup<TState> {
     return new PhaseGroup<TState>() {
       @Override
       public List<PhaseRef<TState>> getPhases() {
-        return phases;
+        return Collections.unmodifiableList(phases);
       }
     };
   }

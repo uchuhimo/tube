@@ -3,7 +3,6 @@ plugins {
 }
 
 ext {
-    commonsLang3Version = "3.5"
     eclipseCollectionsVersion = "8.0.0"
     findbugsVersion = "3.0.1"
     guavaVersion = "20.0"
@@ -36,7 +35,6 @@ dependencies {
             , "org.eclipse.collections:eclipse-collections-api:${eclipseCollectionsVersion}"
             , "org.eclipse.collections:eclipse-collections:${eclipseCollectionsVersion}"
             , "com.google.guava:guava:${guavaVersion}"
-            , "org.apache.commons:commons-lang3:${commonsLang3Version}"
     )
 
     testCompileOnly(

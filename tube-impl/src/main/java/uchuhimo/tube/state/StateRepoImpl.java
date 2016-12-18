@@ -17,6 +17,7 @@ import org.eclipse.collections.impl.factory.primitive.IntObjectMaps;
 import org.eclipse.collections.impl.set.mutable.SetAdapter;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -73,12 +74,12 @@ public class StateRepoImpl implements StateRepo {
 
   @Override
   public Collection<StateRef<?>> getRootRefs() {
-    return rootRefs;
+    return Collections.unmodifiableCollection(rootRefs);
   }
 
   @SuppressWarnings("unchecked")
   @Override
-  public <TState> StateRef<TState> getStateRefById(int id) {
+  public <TState> StateRef<TState> getStateRef(int id) {
     return (StateRef<TState>) stateRegistry.get(id);
   }
 

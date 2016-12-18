@@ -96,7 +96,7 @@ public class StateRefImpl<TState> implements StateRef<TState> {
   }
 
   @Override
-  public PhaseRef<TState> getPhaseById(int phaseId) {
+  public PhaseRef<TState> getPhase(int phaseId) {
     return phaseRegistry.get(phaseId);
   }
 

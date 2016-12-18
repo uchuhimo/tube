@@ -2,6 +2,7 @@ package uchuhimo.tube.state;
 
 import org.eclipse.collections.impl.factory.Maps;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -14,7 +15,7 @@ public interface EnumPhaseGroup<TState, TEnum extends Enum<TEnum>> extends Phase
 
       @Override
       public Map<TEnum, PhaseRef<TState>> getEnumToPhase() {
-        return enumToPhase;
+        return Collections.unmodifiableMap(enumToPhase);
       }
 
       @Override
@@ -26,7 +27,7 @@ public interface EnumPhaseGroup<TState, TEnum extends Enum<TEnum>> extends Phase
 
   Map<TEnum, PhaseRef<TState>> getEnumToPhase();
 
-  default PhaseRef<TState> getPhaseByEnum(TEnum phaseEnum) {
+  default PhaseRef<TState> getPhase(TEnum phaseEnum) {
     return getEnumToPhase().get(phaseEnum);
   }
 }

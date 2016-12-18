@@ -35,7 +35,7 @@ public class StateRefTest {
     final PhaseGroup<MutableInt> phaseGroup = intState.phaseBy(3);
     assertThat(intState.isBorrowed(), is(true));
     assertThat(intState.getPhases(), containsInAnyOrder(phaseGroup.getPhases().toArray()));
-    assertThat(intState.getPhaseById(0), is(phaseGroup.getPhases().get(0)));
+    assertThat(intState.getPhase(0), is(phaseGroup.getPhases().get(0)));
     assertThat(phaseGroup.getPhases().size(), is(3));
     assertThat(phaseGroup.getPhases().get(0).getPhaseId(), is(0));
     for (PhaseRef<MutableInt> phaseRef : phaseGroup.getPhases()) {
@@ -49,13 +49,13 @@ public class StateRefTest {
   public void testPhaseByEnum() throws Exception {
     final StateRef<MutableInt> intState = Mock.newStateRepo().newInt();
     final EnumPhaseGroup<MutableInt, OnePass> onePassGroup = intState.phaseBy(OnePass.class);
-    final PhaseRef<MutableInt> loadPhase = onePassGroup.getPhaseByEnum(OnePass.Load);
+    final PhaseRef<MutableInt> loadPhase = onePassGroup.getPhase(OnePass.Load);
     assertThat(loadPhase.getPhaseType(), is(PhaseType.Writable));
     assertThat(loadPhase.getPhaseId(), is(0));
-    final PhaseRef<MutableInt> updatePhase = onePassGroup.getPhaseByEnum(OnePass.Update);
+    final PhaseRef<MutableInt> updatePhase = onePassGroup.getPhase(OnePass.Update);
     assertThat(updatePhase.getPhaseType(), is(PhaseType.Writable));
     assertThat(updatePhase.getPhaseId(), is(1));
-    final PhaseRef<MutableInt> publishPhase = onePassGroup.getPhaseByEnum(OnePass.Publish);
+    final PhaseRef<MutableInt> publishPhase = onePassGroup.getPhase(OnePass.Publish);
     assertThat(publishPhase.getPhaseType(), is(PhaseType.ReadOnly));
     assertThat(publishPhase.getPhaseId(), is(2));
   }
@@ -68,13 +68,13 @@ public class StateRefTest {
             Tuple.of(OnePass.Load, PhaseType.Broadcast),
             Tuple.of(OnePass.Publish, PhaseType.Writable),
             Tuple.of(OnePass.Update, PhaseType.ReadOnly)));
-    final PhaseRef<MutableInt> loadPhase = customOnePassGroup.getPhaseByEnum(OnePass.Load);
+    final PhaseRef<MutableInt> loadPhase = customOnePassGroup.getPhase(OnePass.Load);
     assertThat(loadPhase.getPhaseType(), is(PhaseType.Broadcast));
     assertThat(loadPhase.getPhaseId(), is(0));
-    final PhaseRef<MutableInt> updatePhase = customOnePassGroup.getPhaseByEnum(OnePass.Update);
+    final PhaseRef<MutableInt> updatePhase = customOnePassGroup.getPhase(OnePass.Update);
     assertThat(updatePhase.getPhaseType(), is(PhaseType.ReadOnly));
     assertThat(updatePhase.getPhaseId(), is(2));
-    final PhaseRef<MutableInt> publishPhase = customOnePassGroup.getPhaseByEnum(OnePass.Publish);
+    final PhaseRef<MutableInt> publishPhase = customOnePassGroup.getPhase(OnePass.Publish);
     assertThat(publishPhase.getPhaseType(), is(PhaseType.Writable));
     assertThat(publishPhase.getPhaseId(), is(1));
   }
