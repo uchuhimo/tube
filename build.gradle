@@ -5,7 +5,7 @@ plugins {
 
 idea {
     project {
-        jdkName = "1.8.0_51"
+        jdkName = "1.8"
         languageLevel = "1.8"
         vcs = "Git"
     }
@@ -34,6 +34,17 @@ subprojects {
     apply plugin: "checkstyle"
 
     sourceCompatibility = 1.8
+
+    ext {
+        findbugsVersion = "3.0.1"
+    }
+
+    dependencies {
+        compileOnly(
+                "com.google.code.findbugs:jsr305:${findbugsVersion}"
+                , "com.google.code.findbugs:annotations:${findbugsVersion}"
+        )
+    }
 
     tasks.withType(JavaCompile) {
         options.encoding = "UTF-8"

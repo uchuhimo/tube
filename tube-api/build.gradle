@@ -4,7 +4,6 @@ plugins {
 
 ext {
     eclipseCollectionsVersion = "8.0.0"
-    findbugsVersion = "3.0.1"
     guavaVersion = "20.0"
     immutablesVersion = "2.3.9"
 }
@@ -13,9 +12,7 @@ dependencies {
     apt "org.immutables:value:${immutablesVersion}"
 
     compileOnly(
-            "com.google.code.findbugs:jsr305:${findbugsVersion}"
-            , "com.google.code.findbugs:annotations:${findbugsVersion}"
-            , "org.immutables:value:${immutablesVersion}"
+            "org.immutables:value:${immutablesVersion}"
     )
 
     compile(
